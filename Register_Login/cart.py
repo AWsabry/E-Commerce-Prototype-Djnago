@@ -1,7 +1,5 @@
-#from decimal import Decimal
 from django.conf import settings
 from .models import Product
-#from coupons.models import Coupons
 
 
 class Cart(object):
