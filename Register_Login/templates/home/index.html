@@ -1,12 +1,14 @@
-hi
 
 
 {% for products in products %}
-    <li> <a href = "#" {{ products.name }}"> {{products.price}} Rating ( {{products.category}})
-    
-    
-
+    <li> <a href = "{{products.get_absolute_url}}"> {{ products.name }} {{products.price}}  {{products.category}}
     
     </li> </a>
 
 {% endfor %}
+
+<br><br><br><br>
+
+{{user.username}}
+<br>
+{{user.email}}
