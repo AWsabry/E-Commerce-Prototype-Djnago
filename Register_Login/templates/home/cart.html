@@ -1,0 +1,22 @@
+
+
+{% for order_item in order_item %}
+    <li> {{ order_item.product_id}} <br>{{order_item.quantity}} <br> {{order_item.totalOrderItemPrice}} <br>
+    </li>
+
+{% endfor %}
+
+<br><br>
+  <form method = "POST" enctype = 'multipart/form-data'>
+            {% csrf_token %}
+            {{ form }}
+
+         <input type="submit" value="Submit">
+
+        </form>
+        Total : {{total}}
+<br><br>
+<p class="text-center">Want to buy more Products <a href="/">Continue Shopping</a>.</p>
+UserName : {{user.username}}
+<br>
+{{user.email}}
