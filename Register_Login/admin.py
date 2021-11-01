@@ -13,7 +13,7 @@ class Register(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',), }
     list_filter = ("name", "created", "brand")
-    list_display = ('name', "created", 'brand')
+    list_display = ('name', "created", "id", 'brand')
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -32,22 +32,11 @@ class BromoCodeAdmin(admin.ModelAdmin):
     list_display = ('code', "percentage", 'created', "active")
 
 
-
-class OrderItemAdmin(admin.ModelAdmin):
-    list_filter = ("user", "product", "ordered",)
-    list_display = ('user', "product", 'quantity',
-                    'totalOrderItemPrice','product_id',"created", "ordered")
-    list_display_links = [
-        'user',
-        'product',
-    ]
-    search_fields = [
-        'user',
-        'product'
-    ]
+class OrderItemAdmin(admin.TabularInline):
     model = OrderItem
-    
-    
+    raw_id_fields = ['product']
+
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user',
                     'ordered',
@@ -64,15 +53,14 @@ class OrderAdmin(admin.ModelAdmin):
                    'delivered',
                    'ordered_date',
                    ]
-    search_fields = [
-        'user__username',
-        'ref_code'
+    inlines = [
+        OrderItemAdmin,
     ]
-    model = Order
+
 
 admin.site.register(Profile, Register)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BromoCode, BromoCodeAdmin)
-admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem)

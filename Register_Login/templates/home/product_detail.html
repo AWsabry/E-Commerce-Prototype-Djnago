@@ -2,7 +2,7 @@
 {% block content %}
 
     {{ name }} <br> {{price}} <br> {{category}} <br> {{description}} <br> <br> 
-    
+
     <form method = 'POST'>
     {% csrf_token %}
      {{form}}
@@ -10,6 +10,8 @@
      <br> <br><button class="btn btn-primary" type="submit">Add to cart</button> <br> <br>
      
     </form>
+
+    
     
 
   

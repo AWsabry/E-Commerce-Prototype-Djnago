@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
 
 
@@ -9,7 +9,10 @@ urlpatterns = [
     path('completeProfile',views.completeProfile,name='completeProfile',),
     path('',views.index,name='index',),
     path('<slug:slug>/',views.product_detail,name='product_detail'),
-    # path('add-to-cart/<slug>/', views.add_to_cart, name='add-to-cart'),
     path('cart',views.cart,name='cart'),
     path('done',views.done,name='done'),
+    path('store',views.store,name='store'),
+
+
+    path('test',views.TestingAPI.as_view(),name = 'testingapi')
 ]

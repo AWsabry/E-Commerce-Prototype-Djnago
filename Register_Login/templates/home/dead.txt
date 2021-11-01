@@ -1,0 +1,10 @@
+{% comment %} {% for products in products %}
+    <li> <a href = "{{products.get_absolute_url}}"> {{ products.name }} {{products.price}}  {{products.category}}
+    
+    </li> </a>
+
+{% endfor %}
+
+
+{{user.username}}
+{{user.email}}  {% endcomment %}

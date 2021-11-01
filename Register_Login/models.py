@@ -1,8 +1,5 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib.auth.forms import UserModel
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
-from django.db.models.signals import post_save
 from django.conf import settings
 from django.urls import reverse
 import uuid
@@ -33,10 +30,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     featured = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def get_absolute_url(self):
-        return reverse("product_detail", args=[self.slug])
+    created = models.DateTimeField(auto_now_add=True)    
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -48,9 +42,7 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
 
-class Product(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(),
-                          editable=False)
+class Product(models.Model):    
     name = models.CharField(max_length=250, blank=True)
     slug = models.SlugField(unique=True, db_index=True,)
     image = models.ImageField(upload_to="products", blank=True)
@@ -77,7 +69,9 @@ class Product(models.Model):
 
 
 class BromoCode(models.Model):
-    code = models.CharField(max_length=10, unique=True, blank=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(),
+                          editable=False)
+    code = models.CharField(max_length=10, unique=True, blank=True,null=True)
     percentage = models.FloatField(default=0.0, validators=[
                                    MinValueValidator(0.0), MaxValueValidator(1.0)],)
     created = models.DateTimeField(auto_now_add=True)
@@ -94,21 +88,6 @@ class BromoCode(models.Model):
         verbose_name_plural = "BromoCodes"
 
 
-class OrderItem(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    ordered = models.BooleanField(default=False)
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name='item')
-    quantity = models.IntegerField(default=1)
-    totalOrderItemPrice = models.FloatField()
-    created = models.DateTimeField(auto_now_add=True)
-    totalOrderItemPrice = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.product} {self.quantity} "
-
-
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
@@ -118,7 +97,6 @@ class Order(models.Model):
         BromoCode, on_delete=models.SET_NULL, blank=True, null=True)
     delivered = models.BooleanField(default=False)
     paid = models.BooleanField(default=False)
-    items = models.ManyToManyField(OrderItem)
     totalPrice = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -132,6 +110,18 @@ class Order(models.Model):
             total -= self.coupon.amount
         return total
 
-    def userOrders(self):
-        return OrderItem.objects.filter(
-            user=self.user, ordered=False).update(ordered=True)
+class OrderItem(models.Model): 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='product')
+    quantity = models.IntegerField(default=1,name='quantity')
+    created = models.DateTimeField(auto_now_add=True)
+    totalOrderItemPrice = models.PositiveIntegerField(default=0)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
+
+
+    def __str__(self):
+        return f"{self.quantity} | {self.product} from {self.user} at {self.created}  "
+         
