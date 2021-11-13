@@ -4,6 +4,28 @@
 
 {% block content %}
 
+
+<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#">Hot Deals</a></li>
+						<li><a href="#">Categories</a></li>
+						<li><a href="#">Laptops</a></li>
+						<li><a href="#">Smartphones</a></li>
+						<li><a href="#">Cameras</a></li>
+						<li><a href="#">Accessories</a></li>
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
 <div id="breadcrumb" class="section">
 			<!-- container -->
 			<div class="container">
@@ -241,7 +263,7 @@
 						<!-- store products -->
 						<div class="row">
 							<!-- product -->
-                            {% for products in products  %}
+                        {% for products in products  %}
 							<div class="col-md-4 col-xs-6">
 								<div class="product">
 									<div class="product-img">
@@ -255,7 +277,11 @@
 									<div class="product-body">
 										<p class="product-category">{{products.category}}</p>
 										<h3 class="product-name"><a href="#">{{products.name}}</a></h3>
+										{% if  products.discount_price == None%}
+										<h4 class="product-price">{{products.price}}</h4>
+										{% else %}
 										<h4 class="product-price">{{products.price}} <del class="product-old-price">{{products.discount_price}}</del></h4>
+										{% endif %}
 										<div class="product-rating">
 											<i class="fa fa-star"></i>
 											<i class="fa fa-star"></i>
@@ -275,7 +301,7 @@
 									</div>
 								</div>
 							</div>
-                            {% endfor %}
+                        {% endfor %}
 							<!-- /product -->
 
 							<!-- product -->

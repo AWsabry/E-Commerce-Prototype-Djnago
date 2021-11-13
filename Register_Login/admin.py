@@ -20,7 +20,7 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',), }
     list_filter = ("name", "category", "brand", "created")
     list_display = ('name', "price", 'brand', "category",
-                    "stock", "id", "created", "active")
+                    "stock", "id", "created","offerPercentage", "active","NewProducts","TopSelling")
     list_display_links = [
         'name',
         'category',

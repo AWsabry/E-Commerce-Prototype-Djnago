@@ -62,17 +62,27 @@ def index(request):
         return redirect('sign')
 
 
-def product_detail(request, slug):
+def category(request):
+    categories = Category.objects.filter(active=True,)
+    context = {
+        'categories': categories
+    }
+    return render(request, 'pages/category.html', context)
+
+
+def productDetails(request, slug):
     quantityForm = QuantityForm(request.POST)
     products = Product.objects.filter(
-        slug=slug, active=True,).first()
+        slug=slug, active=True,)
     date = datetime.datetime.now().hour
     user = Profile.objects.filter(username=request.user).first()
     order_item = OrderItem.objects.filter(
         user=request.user, ordered=False,).values()
 
+
+
     productID = ''
-    for orderItem in OrderItem.objects.filter(user=request.user,ordered = False).values():
+    for orderItem in OrderItem.objects.filter(user=request.user, ordered=False).values():
         productID = orderItem['product_id']
 
     user_ID = ''
@@ -81,15 +91,15 @@ def product_detail(request, slug):
     print(OrderItem.objects.all().values())
 
     context = {
-        'product_id': products.id,
-        "name": products.name,
-        "category": products.category,
-        "price": products.price,
-        "description": products.description,
-        "stock": products.stock,
-        'date': date,
+        # 'product_id': products.id,
+        # "name": products.name,
+        # "category": products.category,
+        # "price": products.price,
+        # "description": products.description,
+        # "stock": products.stock,
+        # 'date': date,
         'form': quantityForm,
-        'slug': products.slug,
+        'products': products
     }
     x = OrderItem.objects.filter(user=request.user).values('id')
     print(x)
@@ -123,7 +133,7 @@ def product_detail(request, slug):
             return redirect('cart')
 
     else:
-        return render(request, "home/product_detail.html", context, )
+        return render(request, "pages/productDetails.html", context,)
 
 
 def cart(request):
@@ -184,10 +194,6 @@ def cart(request):
 #     return HttpResponse('DONES')
 
 
-def done(request):
-    return render(request, 'home/done.html')
-    
-
 def store(request):
     if request.user.is_authenticated:
         products = Product.objects.filter(active=True)
@@ -198,7 +204,7 @@ def store(request):
             "categories": categories,
             'userLoggedIN': userLoggedIN,
         }
-        return render(request, 'home/store.html',context)
+        return render(request, 'home/store.html', context)
     else:
         return redirect('sign')
 
@@ -230,3 +236,9 @@ class TestingAPI(APIView):
         if serializers.is_valid():
             serializers.save()
         return Response(serializers.data, status=status.HTTP_201_CREATED)
+
+
+def checkout(request):
+    return render(request, 'pages/checkout.html')
+
+

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-
+	
 {% block title %}
 
 Home
@@ -9,7 +9,27 @@ Home
 {% block content %}
 
 
-         
+    <nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#">Hot Deals</a></li>
+						<li><a href="category">Categories</a></li>
+						<li><a href="#">Laptops</a></li>
+						<li><a href="#">Smartphones</a></li>
+						<li><a href="#">Cameras</a></li>
+						<li><a href="#">Accessories</a></li>
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
         <!-- SECTION -->
 		<div class="section">
 			<!-- container -->
@@ -24,8 +44,8 @@ Home
                                 
 							</div>
 							<div class="shop-body">
-								<h3>Laptop<br>Collection</h3>
-								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+								<h3>Laptops<br>Collection</h3>
+								<a href="/store" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
 							</div>
 						</div>
 					</div>
@@ -39,7 +59,7 @@ Home
 							</div>
 							<div class="shop-body">
 								<h3>Accessories<br>Collection</h3>
-								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
+								<a href="/store" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
 							</div>
 						</div>
 					</div>
@@ -56,13 +76,15 @@ Home
 								<a href="#" class="cta-btn">Shop now <i class="fa fa-arrow-circle-right"></i></a>
 							</div>
 						</div>
-					</div>
+					
 					<!-- /shop -->
 				</div>
 				<!-- /row -->
 			</div>
 			<!-- /container -->
 		</div>      
+
+
 
 
 
@@ -73,7 +95,7 @@ Home
 				<div class="row">
 
 					<!-- section title -->
-					{% comment %} <div class="col-md-12">
+					<div class="col-md-12">
 						<div class="section-title">
 							<h3 class="title">New Products</h3>
 							<div class="section-nav">
@@ -85,31 +107,33 @@ Home
 								</ul>
 							</div>
 						</div>
-					</div> {% endcomment %}
+					</div> 
                     
 					<!-- /section title -->
-
+					
 					<!-- Products tab & slick -->
-					{% comment %} <div class="col-md-12">
+					 <div class="col-md-12">
 						<div class="row">
 							<div class="products-tabs">
 								<!-- tab -->
 								<div id="tab1" class="tab-pane active">
 									<div class="products-slick" data-nav="#slick-nav-1">
 										<!-- product -->
+										{% for products in products %}
+								{% if products.NewProducts == True %}
 										<div class="product">
 											<div class="product-img">
-												<img src="{% static "img/product01.png"%}" alt="">
+												<img src="{{products.image.url}}" alt="">
                                                 
 												<div class="product-label">
-													<span class="sale">-30%</span>
+													<span class="sale">{{products.offerPercentage}}% </span>
 													<span class="new">NEW</span>
 												</div>
 											</div>
 											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<p class="product-category">{{products.category}}</p>
+												<h3 class="product-name"><a href="{{products.get_absolute_url}}">{{products.name}}</a></h3>
+												<h4 class="product-price">L.E {{products.price}} <del class="product-old-price">L.E {{products.oldPrice}}</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -118,7 +142,6 @@ Home
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
 													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
 												</div>
@@ -127,9 +150,11 @@ Home
 												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
 											</div>
 										</div>
+						{% endif %}
+						{% endfor %}
 										<!-- /product -->
 
-										<!-- product -->
+										{% comment %} <!-- product -->
 										<div class="product">
 											<div class="product-img">
 												<img src="{% static "img/product02.png"%}" alt="">
@@ -140,7 +165,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -171,7 +196,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 												</div>
 												<div class="product-btns">
@@ -194,7 +219,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -222,7 +247,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -239,7 +264,7 @@ Home
 											<div class="add-to-cart">
 												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
 											</div>
-										</div>
+										</div> {% endcomment %}
 										<!-- /product -->
 									</div>
 									<div id="slick-nav-1" class="products-slick-nav"></div>
@@ -253,7 +278,9 @@ Home
 				<!-- /row -->
 			</div>
 			<!-- /container -->
-		</div> {% endcomment %}
+		</div> 
+
+
 
         <div id="hot-deal" class="section">
 			<!-- container -->
@@ -290,7 +317,7 @@ Home
 							</ul>
 							<h2 class="text-uppercase">hot deal this week</h2>
 							<p>New Collection Up to 50% OFF</p>
-							<a class="primary-btn cta-btn" href="#">Shop now</a>
+							<a class="primary-btn cta-btn" href="/store">Visit Our Store</a>
 						</div>
 					</div>
 				</div>
@@ -299,7 +326,7 @@ Home
 			<!-- /container -->
 		</div>
 
-        {% comment %} <div class="section">
+        <div class="section">
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
@@ -329,18 +356,24 @@ Home
 								<div id="tab2" class="tab-pane fade in active">
 									<div class="products-slick" data-nav="#slick-nav-2">
 										<!-- product -->
+								{% for products in products %}
+								{% if products.TopSelling == True %}
 										<div class="product">
 											<div class="product-img">
-												<img src="{% static "img/product06.png"%}" alt="">
+												<img src="{{products.image.url}}" alt="">
 												<div class="product-label">
-													<span class="sale">-30%</span>
-													<span class="new">NEW</span>
+													<span class="sale">{{products.offerPercentage}}%</span>
+													
 												</div>
 											</div>
 											<div class="product-body">
-												<p class="product-category">Category</p>
-												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<p class="product-category">{{products.category}}</p>
+												<h3 class="product-name"><a href="{{products.get_absolute_url}}">{{products.name}}</a></h3>
+												{% if  products.oldPrice == None%}
+												<h4 class="product-price">L.E {{products.price}} <del class="product-old-price">
+												{% else %}
+												<h4 class="product-price">L.E {{products.price}} <del class="product-old-price">L.E {{products.oldPrice}}</del></h4>
+												{% endif %}		
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -349,9 +382,8 @@ Home
 													<i class="fa fa-star"></i>
 												</div>
 												<div class="product-btns">
-													<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
 													<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
-													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+													<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span> </button>
 												</div>
 											</div>
 											<div class="add-to-cart">
@@ -359,8 +391,9 @@ Home
 											</div>
 										</div>
 										<!-- /product -->
-
-										<!-- product -->
+							{% endif %}
+							{% endfor %}
+										{% comment %} <!-- product -->
 										<div class="product">
 											<div class="product-img">
 												<img src="{% static "img/product07.png"%}" alt="">
@@ -371,7 +404,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -402,7 +435,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 												</div>
 												<div class="product-btns">
@@ -425,7 +458,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -453,7 +486,7 @@ Home
 											<div class="product-body">
 												<p class="product-category">Category</p>
 												<h3 class="product-name"><a href="#">product name goes here</a></h3>
-												<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+												<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 												<div class="product-rating">
 													<i class="fa fa-star"></i>
 													<i class="fa fa-star"></i>
@@ -470,7 +503,7 @@ Home
 											<div class="add-to-cart">
 												<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
 											</div>
-										</div>
+										</div> {% endcomment %}
 										<!-- /product -->
 									</div>
 									<div id="slick-nav-2" class="products-slick-nav"></div>
@@ -484,7 +517,7 @@ Home
 				<!-- /row -->
 			</div>
 			<!-- /container -->
-		</div> {% endcomment %}
+		</div>
     
         <div class="section">
 			<!-- container -->
@@ -501,9 +534,8 @@ Home
 
 						<div class="products-widget-slick" data-nav="#slick-nav-3">
 							<div>
-                            {% for products in products  %}
 								<!-- product widget -->
-								<div class="product-widget">
+								{% comment %} <div class="product-widget">
 									<div class="product-img">
 										<img src="{{ products.image.url }}" alt="error">
 									</div>
@@ -512,22 +544,22 @@ Home
 										<h3 class="product-name"><a href="#">{{ products.name }}</a></h3>
 										<h4 class="product-price">{{products.price}} L.E <del class="product-old-price">L.E {{ products.discount_price }}</del></h4>
 									</div>
-								</div>
+								</div> {% endcomment %}
 								<!-- /product widget -->
-{% endfor %}
+
                                 
 
 								<!-- product widget -->
-								{% comment %} <div class="product-widget">
+								 <div class="product-widget">
 									<div class="product-img">
 										<img src="{% static "img/product08.png"%}" alt="">
 									</div>
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
-								</div> {% endcomment %}
+								</div> 
 								<!-- /product widget -->
 
 								<!-- product widget -->
@@ -538,7 +570,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -553,7 +585,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -566,7 +598,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -579,7 +611,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -606,7 +638,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -619,7 +651,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -632,7 +664,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -647,7 +679,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -660,7 +692,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -673,7 +705,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -701,7 +733,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -714,7 +746,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -727,7 +759,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -742,7 +774,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -755,7 +787,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- /product widget -->
@@ -768,7 +800,7 @@ Home
 									<div class="product-body">
 										<p class="product-category">Category</p>
 										<h3 class="product-name"><a href="#">product name goes here</a></h3>
-										<h4 class="product-price">$980.00 <del class="product-old-price">$990.00</del></h4>
+										<h4 class="product-price">L.E 980.00 <del class="product-old-price">L.E 990.00</del></h4>
 									</div>
 								</div>
 								<!-- product widget -->
@@ -782,6 +814,8 @@ Home
 			<!-- /container -->
 		</div>
         
+
+	
     {% endblock content %}
     
 

@@ -34,7 +34,7 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-
+    
     def __str__(self):
         return self.name
 
@@ -50,13 +50,24 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    discount_price = models.FloatField(blank=True, null=True)
+    oldPrice = models.FloatField(blank=True, null=True)
+    offerPercentage = models.IntegerField(blank=True, null=True,)
     active = models.BooleanField(default=True)
+    TopSelling = models.BooleanField(default=False)
+    NewProducts = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     stock = models.IntegerField()
 
     def get_absolute_url(self):
-        return reverse("product_detail", args=[self.slug])
+        return reverse("productDetails", args=[self.slug])
+    
+    def discountpercentage(self):
+        discountAmount = self.oldPrice - self.price
+        self.offPercentage = (discountAmount/self.oldPrice) * 100
+        return (int(self.offPercentage))
+    offerPercentage = property(discountpercentage)
+
+
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -97,6 +108,7 @@ class Order(models.Model):
         BromoCode, on_delete=models.SET_NULL, blank=True, null=True)
     delivered = models.BooleanField(default=False)
     paid = models.BooleanField(default=False)
+    comment = models.TextField(max_length=2000,blank=True,null=True)
     totalPrice = models.PositiveIntegerField(default=0)
 
     def __str__(self):
