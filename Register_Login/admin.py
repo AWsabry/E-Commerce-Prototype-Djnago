@@ -1,4 +1,4 @@
-from Register_Login.models import BromoCode, Category, Order, OrderItem, Product, Profile
+from Register_Login.models import BromoCode, Cart, Category, Order, Product, Profile,CartItems
 from django.contrib import admin
 
 # Register your models here.
@@ -32,30 +32,49 @@ class BromoCodeAdmin(admin.ModelAdmin):
     list_display = ('code', "percentage", 'created', "active")
 
 
-class OrderItemAdmin(admin.TabularInline):
-    model = OrderItem
+
+
+    
+    
+class CartItemsAdmin(admin.TabularInline):
+    model = CartItems
     raw_id_fields = ['product']
+    
 
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['user',
+                    'ordered',
+                    'total_price',
+                    'delivered',
+                    'coupon',
+                    'ordered_date',
+                    'paid'
 
+                    ]
+    inlines = [
+        CartItemsAdmin,
+    ]
+    
+    
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user',
                     'ordered',
                     'delivered',
-                    'coupon',
+                    # 'coupon',
                     'ordered_date'
 
                     ]
     list_display_links = [
         'user',
-        'coupon'
+        # 'coupon'
     ]
     list_filter = ['ordered',
                    'delivered',
                    'ordered_date',
                    ]
-    inlines = [
-        OrderItemAdmin,
-    ]
+    # inlines = [
+    #     CartItemsAdmin,
+    # ]
 
 
 admin.site.register(Profile, Register)
@@ -63,4 +82,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(BromoCode, BromoCodeAdmin)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(OrderItem)
+
+admin.site.register(Cart,CartAdmin)
+admin.site.register(CartItems)

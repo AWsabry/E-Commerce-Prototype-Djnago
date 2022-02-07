@@ -1,7 +1,7 @@
 
 
-{% for order_item in order_item %}
-    <li> {{ order_item.product_id}} <br>{{order_item.quantity}} <br> {{order_item.totalOrderItemPrice}} <br>
+{% for cartItem in cartItem %}
+    <li> Product ID {{ cartItem.product_id }} <br>Product Quantity :{{cartItem.quantity}} <br> Total : {{cartItem.totalOrderItemPrice}} <br><br>
     </li>
 
 {% endfor %}

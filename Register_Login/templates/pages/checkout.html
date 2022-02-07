@@ -62,7 +62,7 @@ Checkout
 
 					<div class="col-md-7">
 						<!-- Billing Details -->
-						<div class="billing-details">
+						{% comment %} <div class="billing-details">
 							<div class="section-title">
 								<h3 class="title">Billing address</h3>
 							</div>
@@ -103,11 +103,11 @@ Checkout
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> {% endcomment %}
 						<!-- /Billing Details -->
 
 						<!-- Shiping Details -->
-						<div class="shiping-details">
+						{% comment %} <div class="shiping-details">
 							<div class="section-title">
 								<h3 class="title">Shiping address</h3>
 							</div>
@@ -117,6 +117,7 @@ Checkout
 									<span></span>
 									Ship to a diffrent address?
 								</label>
+								
 								<div class="caption">
 									<div class="form-group">
 										<input class="input" type="text" name="first-name" placeholder="First Name">
@@ -144,10 +145,13 @@ Checkout
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> {% endcomment %}
 						<!-- /Shiping Details -->
 
 						<!-- Order notes -->
+						<div class="section-title">
+							<h3 class="title">Order Notes</h3>
+						</div>
 						<div class="order-notes">
 							<textarea class="input" placeholder="Order Notes"></textarea>
 						</div>
@@ -155,34 +159,40 @@ Checkout
 					</div>
 
 					<!-- Order Details -->
+					
 					<div class="col-md-5 order-details">
 						<div class="section-title text-center">
-							<h3 class="title">Your Order</h3>
+							
+							<h3 class="title">{{user.username}} Order</h3>
+							
 						</div>
+						
 						<div class="order-summary">
 							<div class="order-col">
 								<div><strong>PRODUCT</strong></div>
 								<div><strong>TOTAL</strong></div>
 							</div>
+							
 							<div class="order-products">
+								{% for cartItem in cartItem %}
 								<div class="order-col">
-									<div>1x Product Name Goes Here</div>
-									<div>L.E 980.00</div>
+									<div>{{cartItem.quantity}} of {{cartItem.product_id}}</div>
+									<div>L.E {{cartItem.totalOrderItemPrice}}</div>
 								</div>
-								<div class="order-col">
-									<div>2x Product Name Goes Here</div>
-									<div>L.E 980.00</div>
-								</div>
+								{% endfor %}
 							</div>
 							<div class="order-col">
 								<div>Shiping</div>
 								<div><strong>FREE</strong></div>
 							</div>
+							{% for cart in cart %}
 							<div class="order-col">
 								<div><strong>TOTAL</strong></div>
-								<div><strong class="order-total">L.E 2940.00</strong></div>
+								<div><strong class="order-total">L.E {{total}}</strong></div>
 							</div>
+							{% endfor %}
 						</div>
+						
 						<div class="payment-method">
 							<div class="input-radio">
 								<input type="radio" name="payment" id="payment-1">
@@ -222,8 +232,15 @@ Checkout
 								I've read and accept the <a href="#">terms & conditions</a>
 							</label>
 						</div>
-						<a href="#" class="primary-btn order-submit">Place order</a>
+						<form method = "POST" enctype = 'multipart/form-data'>
+							{% csrf_token %}
+							{{ form }}
+				
+							<input type="submit" value="Place order" class="primary-btn order-submit">
+						</form>
+						
 					</div>
+					
 					<!-- /Order Details -->
 				</div>
 				<!-- /row -->
