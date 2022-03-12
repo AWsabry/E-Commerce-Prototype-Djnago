@@ -25,20 +25,26 @@ SECRET_KEY = 'django-insecure-ie45diq&_=-uyp@2hi-d0c)zu8ke9k$2@*-*5&*9-00i1wh)5e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'Register_Login',
+    'cart_and_orders',
+    'categories_and_products',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',    
+    'rest_framework', 
+    'crispy_forms',  
+
 ]
 
 MIDDLEWARE = [
@@ -137,7 +143,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 
+AUTH_USER_MODEL = 'Register_Login.Profile'
+
+AUTH_EMAIL_ACTIVATE_EXPIRE = 30 # in seconds
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'awtestingdev@gmail.com'
+EMAIL_HOST_PASSWORD = 'awsabry2000'
+EMAIL_USE_TLS = True 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+

@@ -55,6 +55,12 @@ Table OF Contents
 	Typography
 \*----------------------------*/
 
+.center {
+  display: flex;
+  justify-content: center;
+  }
+
+
 body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
@@ -84,6 +90,15 @@ ul, ol {
   margin: 0;
   padding: 0;
   list-style: none
+}
+
+.product-image-container{
+
+  width: auto;
+  height: 250px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 /*----------------------------*\

@@ -1,103 +1,103 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.conf import settings
-from django.urls import reverse
 from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,PermissionsMixin,Group
 import uuid
+from django.utils.timezone import timedelta
+from django.utils import timezone
+from Register_Login.utils import AccessTokenGenerator
 
 
-class Profile(models.Model):
-    username = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    FirstName = models.CharField(max_length=50, default='', null=True)
-    LastName = models.CharField(max_length=50, default='', null=True)
-    Age = models.CharField(max_length=10, default='', null=True)
-    PhoneNumber = models.IntegerField()
+
+
+class UserManager(BaseUserManager):
+    def get_by_natural_key(self, username):
+        """
+        To make email login case sensetive.
+        """
+        
+        return self.get(email__iexact=username)
+
+    def create_user(self, email, password, **extra_fields):
+        """
+        Create and save a User with the given email and password.
+        """
+        
+        if not email:
+            raise ValueError('Email does not included!')
+        
+        email = self.normalize_email(email)
+        user = self.model(email=email, password=password, **extra_fields)
+        user.set_password(password)
+        user.save()
+        
+        return user
+    
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Create and save a SuperUser with the given email and password.
+        """
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        
+        return self.create_user(email=email, password=password, **extra_fields)
+
+class Profile(AbstractBaseUser,PermissionsMixin):
+    email = models.EmailField(verbose_name='email address', unique=True)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
+    is_active = models.BooleanField(default=False)
+    is_seller = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    Age = models.CharField(max_length=10, null=True)
+    PhoneNumber =  models.CharField(max_length=20, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     ProfilePic = models.ImageField(upload_to="profile/", null=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    USERNAME_FIELD = 'email'
+    objects = UserManager()
 
     def __str__(self):
-        return f"{self.FirstName} ({self.LastName})"
+        return self.email
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=250, blank=True)
-    slug = models.SlugField(unique=True, db_index=True)
-    image = models.ImageField(upload_to="categories", blank=True)
-    brand = models.CharField(max_length=250, blank=True)
-    description = models.TextField(blank=True)
-    featured = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True)    
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+class AccessToken(models.Model):
+    token = models.CharField(max_length=500, blank=True)
+    user = models.ForeignKey(to= Profile, on_delete=models.CASCADE, related_name='token')
+    expires = models.DateTimeField()
+    created = models.DateTimeField(auto_now=True, editable=False)
     
     def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "Categories"
-
-
-class Product(models.Model):    
-    name = models.CharField(max_length=250, blank=True)
-    slug = models.SlugField(unique=True, db_index=True,)
-    image = models.ImageField(upload_to="products", blank=True)
-    brand = models.CharField(max_length=250, blank=True)
-    description = models.TextField(blank=True)
-    price = models.PositiveIntegerField(default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    oldPrice = models.FloatField(blank=True, null=True)
-    offerPercentage = models.IntegerField(blank=True, null=True,)
-    active = models.BooleanField(default=True)
-    TopSelling = models.BooleanField(default=False)
-    NewProducts = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    stock = models.IntegerField()
-
-    def get_absolute_url(self):
-        return reverse("productDetails", args=[self.slug])
+        return self.token
     
-    def discountpercentage(self):
-        discountAmount = self.oldPrice - self.price
-        self.offPercentage = (discountAmount/self.oldPrice) * 100
-        return (int(self.offPercentage))
-    offerPercentage = property(discountpercentage)
-
-
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-
     class Meta:
-        verbose_name_plural = "Products"
+        ordering = ('-created',)
+
+@receiver(pre_save, sender=AccessToken)
+def token_save(sender, instance, **kwargs):
+    instance.token = AccessTokenGenerator().make_token(instance.user)
+    instance.expires = timezone.now() + timedelta(seconds=settings.AUTH_EMAIL_ACTIVATE_EXPIRE)
+    
+# @receiver(post_save, sender=Profile)
+# def teacher_group(sender, instance, **kwargs):
+#     group = Group.objects.all()
+    
+#     if group and instance.is_teacher:
+#         group.user_set.add(instance)
+#     else:
+#         group.user_set.remove(instance)    
 
 
-class BromoCode(models.Model):
-    code = models.CharField(max_length=10, unique=True, blank=True,null=True)
-    percentage = models.FloatField(default=0.0, validators=[
-                                   MinValueValidator(0.0), MaxValueValidator(1.0)],)
-    created = models.DateTimeField(auto_now_add=True)
-    active = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.code
-
-    def save(self, *args, **kwargs):
-        self.percentage = round(self.percentage, 2)
-        super(BromoCode, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "BromoCodes"
 
 
 
@@ -123,75 +123,6 @@ class BromoCode(models.Model):
 #             names.append(product.name)
 #         return names
 
-
-
-class Cart(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ordered = models.BooleanField(default=False)
-    total_price = models.FloatField(default=0)
-    ordered_date = models.DateTimeField(auto_now_add=True)
-    coupon = models.ForeignKey(
-        BromoCode, on_delete=models.SET_NULL, blank=True, null=True)
-    delivered = models.BooleanField(default=False)
-    paid = models.BooleanField(default=False)
-    comment = models.TextField(max_length=2000,blank=True,null=True) 
-     
-    def __str__(self):
-        return str(self.user)
-    
-         
-
-
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    ordered_date = models.DateTimeField(auto_now_add=True)
-    ordered = models.BooleanField(default=False)
-    coupon = models.CharField(max_length=10, blank=True,null=True)
-    delivered = models.BooleanField(default=False)
-    paid = models.BooleanField(default=False)
-    comment = models.TextField(max_length=2000,blank=True,null=True)
-    totalPrice = models.PositiveIntegerField(default=0)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE) 
-    
-    def __str__(self):
-        return self.user.username
-
-    def get_total(self):
-        total = 0
-        for order_item in self.items.all():
-            total += order_item.get_final_price()
-        if self.coupon:
-            total -= self.coupon.amount
-        return total
-    
-class CartItems(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    # order = models.ForeignKey(Order, on_delete=models.CASCADE) 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    ordered = models.BooleanField(default=False)
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    price = models.FloatField(default=0)
-    quantity = models.IntegerField(default=1,name='quantity')
-    created = models.DateTimeField(auto_now_add=True)
-    totalOrderItemPrice = models.PositiveIntegerField(default=0)
-    
-    def __str__(self):
-        return str(self.user.username) + " " + str(self.product.name)
-    
-    class Meta:
-        verbose_name_plural = "CartItems"
-    
-    
-@receiver(pre_save, sender=CartItems)
-def correct_price(sender, **kwargs):
-    cart_items = kwargs['instance']
-    price_of_product = Product.objects.get(id=cart_items.product.id)
-    cart_items.price = cart_items.quantity * float(price_of_product.price)
-    total_cart_items = CartItems.objects.filter(user = cart_items.user )
-    cart = Cart.objects.get(id = cart_items.cart.id)
-    cart.total_price = cart_items.price
-    cart.save()
 
         
     

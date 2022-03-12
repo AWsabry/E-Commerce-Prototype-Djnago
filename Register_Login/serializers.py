@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Product, Profile
+
+from categories_and_products.models import Product
 
 class Profileserializers(serializers.ModelSerializer):
 

@@ -1,0 +1,10 @@
+
+
+    {% for products in products %}
+    <tr>
+        <th>{{ products.name }}</th>
+        <th>{{ products.price}}</th> <!-- filter added -->
+        <th>{{ products.category_id}}</th> <!-- filter added -->
+<br> <br>
+    </tr>
+    {% endfor %}
