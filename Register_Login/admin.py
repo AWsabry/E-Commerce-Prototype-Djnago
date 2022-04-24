@@ -1,4 +1,4 @@
-from Register_Login.models import AccessToken,Profile
+from Register_Login.models import AccessToken, Newsletter,Profile
 from django.contrib import admin
 
 # Register your models here.
@@ -12,18 +12,13 @@ class Register(admin.ModelAdmin):
 
 
 
-class AccessTokenAdmin(admin.ModelAdmin):
-    model = Profile
-    fieldsets = (
-        (None, {"fields": (
-                'user', 'token', 'expires', 'created'
-            )}),
-    )
-    readonly_fields = ('token','created')
-    list_display = ('user', 'token', 'created')
+class NewsletterAdmin(admin.ModelAdmin):
+    model = Newsletter
+    list_display = ('email',)
 
 
 
 admin.site.register(Profile, Register)
-admin.site.register(AccessToken, AccessTokenAdmin)
+admin.site.register(Newsletter, NewsletterAdmin)
+
 

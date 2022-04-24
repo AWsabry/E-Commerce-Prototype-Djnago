@@ -3,10 +3,6 @@ from cart_and_orders.models import Cart, CartItems, Order
 
 from categories_and_products.models import BromoCode
 
-# Register your models here.
-
-
-
     
     
 class CartItemsAdmin(admin.TabularInline):
@@ -33,21 +29,16 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['user',
                     'ordered',
                     'delivered',
-                    # 'coupon',
                     'ordered_date'
 
                     ]
     list_display_links = [
         'user',
-        # 'coupon'
     ]
-    list_filter = ['ordered',
+    list_filter = ['user','ordered',
                    'delivered',
                    'ordered_date',
                    ]
-    # inlines = [
-    #     CartItemsAdmin,
-    # ]
 
 
 class BromoCodeAdmin(admin.ModelAdmin):

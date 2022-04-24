@@ -24,7 +24,7 @@ def index(request):
         }
         return render(request, 'index.html', context)
     else:
-        return redirect('sign')
+        return redirect('Register_Login:sign')
 
 
 def category(request):
@@ -58,7 +58,6 @@ def store(request):
             "categories": categories,
             'userLoggedIN': userLoggedIN,
             'p_obj' : p_obj.get_page(1)
-            # 'search_products' : search_products
         }
 
      
@@ -123,7 +122,7 @@ def productDetails(request, slug):
     cart = Cart.objects.get(user=request.user)
     order = Order.objects.filter(user=request.user, ordered=False)
 
-    cartItem = CartItems.objects.values()
+    cartItem = CartItems.objects.filter(user=request.user).values()
 
     product_data = Product.objects.get(slug=slug)
 
@@ -132,14 +131,14 @@ def productDetails(request, slug):
         totalOrderPricelist.append(totalPriceCheck['totalOrderItemPrice'])
     total = sum(totalOrderPricelist)
 
+    print(total)
+    print(totalOrderPricelist)
+
+  
+    
+
     context = {
-        # 'product_id': products.id,
-        # "name": products.name,
-        # "category": products.category,
-        # "price": products.price,
-        # "description": products.description,
-        # "stock": products.stock,
-        # 'date': date,
+
         'form': quantityForm,
         'products': products
     }
@@ -147,39 +146,22 @@ def productDetails(request, slug):
 
     if request.method == 'POST':
         if quantityForm.is_valid():
-            # print(products.price)
-
+            
             totalOrderItemPrice = product_data.price * \
                 quantityForm.cleaned_data['Quantity']
 
-            # if productID == product_data.id and slug == context['slug']:
+
             print('Done')
             CartItems.objects.create(
                 user=request.user,
                 cart=cart,
                 product=product_data,
                 ordered=False,
-                # order = order,
                 quantity=quantityForm.cleaned_data['Quantity'],
                 totalOrderItemPrice=totalOrderItemPrice
             )
+            
 
-            # OrderItem.objects.filter(user=request.user, ordered=False,).update(
-            #     product=products,
-            #     user=request.user,
-            #     ordered=False,
-            #     quantity=quantityForm.cleaned_data['Quantity'],
-            #     totalOrderItemPrice=totalOrderItemPrice,
-            # )
-
-            # else:
-            # print('Another_Product')
-            # CartItems.objects.filter(user=request.user,ordered = False,).create(
-            #     product=product_data,
-            #     ordered=False,
-            #     quantity=quantityForm.cleaned_data['Quantity'],
-            #     totalOrderItemPrice=totalOrderItemPrice
-            # )
             return redirect('cart_and_orders:checkout')
 
     return render(request, "productDetails.html", context)

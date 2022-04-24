@@ -5,6 +5,11 @@ from django.contrib.auth import views
 from Register_Login.views import Register, completeProfile, logOut, sign,email_sent,activate_user,TestingAPI
 
 
+
+
+app_name = 'Register_Login'
+
+
 urlpatterns = [
     path('Register', view = Register, name='Register'),
     path('sign', view = sign, name='sign'),

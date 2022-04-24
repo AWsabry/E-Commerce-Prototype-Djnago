@@ -97,31 +97,10 @@ def token_save(sender, instance, **kwargs):
 #         group.user_set.remove(instance)    
 
 
-
-
-
-
-
-# class OrderItem(models.Model): 
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-#                              on_delete=models.CASCADE)
-#     ordered = models.BooleanField(default=False)
-#     product = models.ForeignKey(
-#         Product, on_delete=models.CASCADE, related_name='product')
-#     quantity = models.IntegerField(default=1,name='quantity')
-#     created = models.DateTimeField(auto_now_add=True)
-#     totalOrderItemPrice = models.PositiveIntegerField(default=0)
-#     order = models.ForeignKey(Order,on_delete=models.CASCADE,null=True)
-
-
-#     def __str__(self):
-#         return f"{self.quantity} | {self.product} from {self.user} at {self.created}  "
-    
-#     def get_product(self, instance):
-#         names = []
-#         for product in instance.product.all():
-#             names.append(product.name)
-#         return names
+class Newsletter(models.Model):
+    email = models.EmailField(max_length=500, blank=True)
+    def __str__(self):
+        return self.email
 
 
         

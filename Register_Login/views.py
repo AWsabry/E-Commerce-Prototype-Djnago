@@ -79,41 +79,19 @@ def Register(request):
         first_name, last_name = form.data.get(
             'first_name'), form.data.get('last_name')
         password = form.data.get('password1')
-        # if form.is_valid():
         user = Profile.objects.create_user(
             email=email,
             first_name=first_name,
             last_name=last_name,
             password=password,)
 
-        # print("Done_02")
         send_activate_mail(request, user)
-        # print("Done_03")
-        # print(email)
-        # Cart.objects.create(
-        #         user=users ,
-        #         ordered=False,
-        #     )
+
         return redirect('email_sent')
-        # else:
-        #     messages.error(request, _(
-        #         'This showing something wrong!'), extra_tags='danger')
+
     else:
         form = RegisterForm()
-    # form = RegisterForm(request.POST, request.FILES)
-    # if request.user.is_authenticated:
-    #     return redirect('index')
-    # else:
-    #     if request.method == 'POST':
-    #         print("Done_01")
-    #         if form.is_valid():
-    #             print("Done_02")
-    #             user = form.save()
-    #             login(request, user)
-    #             print("Done_03")
-    #             return redirect('index')
         return render(request, "Register.html",  {
-            # 'form': form
         })
 
 
@@ -157,9 +135,8 @@ def completeProfile(request):
 
 def logOut(request):
     logout(request)
-    form = LoginForm(request.POST, request.FILES)
     messages.info(request, "You have successfully logged out.")
-    return render(request, 'signIn.html',{'form': form})
+    return render(request, 'LogOut.html',)
 
 
 def sign(request):

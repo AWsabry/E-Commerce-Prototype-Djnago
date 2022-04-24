@@ -43,11 +43,11 @@
 				<div class="container">
 					<ul class="header-links pull-left">
 						{% comment %} <li><a href="#"><i class="fa fa-phone"></i> {{Profile.phonenumber}}</a></li> {% endcomment %}
-						<li><a href="mailto:{{user.email}}"><i class="fa fa-envelope-o"></i>  {{user.email}}</a></li>
+						<li><a href="#"><i class="fa fa-user-o"></i>   {{ user.first_name }} {{ user.last_name }}</a></li>
 						{% comment %} <li><a href="#"><i class="fa fa-map-marker"></i> Address </a></li> {% endcomment %}
 					</ul>
 					<ul class="header-links pull-right">
-						<li><a href="#"><i class="fa fa-user-o"></i> {{ user.first_name }} {{ user.last_name }} </a></li>
+						<li><a href="{% url 'Register_Login:logOut' %}"><i class="fa fa-sign-out"> Logout</i> </a></li>
 					</ul>
 				</div>
 			</div>
@@ -127,8 +127,10 @@
 						<div class="newsletter">
 							<p>Sign Up for the <strong>NEWSLETTER</strong></p>
 							<form>
-								<input class="input" type="email" placeholder="Enter Your Email">
-								<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
+								{% csrf_token %}
+
+								<button class="newsletter-btn"  type="submit" ><i class="fa fa-envelope"></i> Contact</button>
+
 							</form>
 							<ul class="newsletter-follow">
 								<li>
@@ -174,11 +176,11 @@
 							<div class="footer">
 								<h3 class="footer-title">Categories</h3>
 								<ul class="footer-links">
-									<li><a href="#">Hot deals</a></li>
-									<li><a href="#">Laptops</a></li>
-									<li><a href="#">Smartphones</a></li>
-									<li><a href="#">Cameras</a></li>
-									<li><a href="#">Accessories</a></li>
+									<li><a href="store">store</a></li>
+									<li><a href="laptops">Laptops</a></li>
+									<li><a href="smartphones">Smartphones</a></li>
+									<li><a href="cameras">Cameras</a></li>
+									<li><a href="accessories">Accessories</a></li>
 								</ul>
 							</div>
 						</div>
@@ -203,7 +205,7 @@
 								<h3 class="footer-title">Service</h3>
 								<ul class="footer-links">
 									<li><a href="#">My Account</a></li>
-									<li><a href="#">View Cart</a></li>
+									<li><a href="checkout">View Cart</a></li>
 									<li><a href="#">Track My Order</a></li>
 									<li><a href="#">Help</a></li>
 								</ul>

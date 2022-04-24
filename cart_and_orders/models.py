@@ -21,8 +21,7 @@ class Cart(models.Model):
      
     def __str__(self):
         return str(self.user)
-    
-         
+
 
 
 class Order(models.Model):
@@ -50,9 +49,9 @@ class Order(models.Model):
     
 class CartItems(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    # order = models.ForeignKey(Order, on_delete=models.CASCADE) 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
+    shipped =  models.BooleanField(default=False)
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     price = models.FloatField(default=0)
     quantity = models.IntegerField(default=1,name='quantity')
@@ -73,5 +72,5 @@ def correct_price(sender, **kwargs):
     cart_items.price = cart_items.quantity * float(price_of_product.price)
     total_cart_items = CartItems.objects.filter(user = cart_items.user )
     cart = Cart.objects.get(id = cart_items.cart.id)
-    cart.total_price = cart_items.price
+    cart.total_price += cart_items.price
     cart.save()

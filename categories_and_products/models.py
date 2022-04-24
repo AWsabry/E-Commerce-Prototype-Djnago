@@ -55,6 +55,36 @@ class Product(models.Model):
     offerPercentage = property(discountpercentage)
 
 
+class ProductSales(models.Model):    
+    name = models.CharField(max_length=250, blank=True)
+    slug = models.SlugField(unique=True, db_index=True,)
+    image = models.ImageField(upload_to="products", blank=True)
+    brand = models.CharField(max_length=250, blank=True)
+    description = models.TextField(blank=True)
+    price = models.FloatField(default=0)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    oldPrice = models.FloatField(blank=True, null=True,default=0)
+    offerPercentage = models.FloatField(blank=True, null=True,)
+    active = models.BooleanField(default=True)
+    TopSelling = models.BooleanField(default=False)
+    NewProducts = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+    stock = models.IntegerField()
+    
+
+    def get_absolute_url(self):
+        return reverse("productDetails", args=[self.slug])
+    
+    def discountpercentage(self):
+        if self.oldPrice :
+            discountAmount = self.oldPrice - self.price
+            self.offPercentage = (discountAmount/self.oldPrice) * 100
+            return (int(self.offPercentage))
+        else:
+            pass
+    offerPercentage = property(discountpercentage)
+
+
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -63,13 +93,13 @@ class Product(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Products"
+        verbose_name_plural = "Products Sales"
 
 
 class BromoCode(models.Model):
     code = models.CharField(max_length=10, unique=True, blank=True,null=True)
     percentage = models.FloatField(default=0.0, validators=[
-                                   MinValueValidator(0.0), MaxValueValidator(1.0)],)
+                                   MinValueValidator(0.0), MaxValueValidator(1.0)], blank=True,null=True,)
     created = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
