@@ -1,9 +1,8 @@
 from django.db import models
 from django.conf import settings
-from django.db.models.signals import pre_save,post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager,PermissionsMixin,Group
-import uuid
 from django.utils.timezone import timedelta
 from django.utils import timezone
 from Register_Login.utils import AccessTokenGenerator
@@ -59,6 +58,7 @@ class Profile(AbstractBaseUser,PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     Age = models.CharField(max_length=10, null=True)
+    city = models.CharField(max_length=60, null=True)
     PhoneNumber =  models.CharField(max_length=20, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     ProfilePic = models.ImageField(upload_to="profile/", null=True)

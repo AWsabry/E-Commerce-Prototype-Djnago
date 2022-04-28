@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 class RegisterForm(UserCreationForm):
     class Meta:
         model = Profile
-        fields = ('email', 'first_name', 'last_name', 'password1', 'password2',)
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2','city')
         error_messages = {
             'email': {
                 'unique': _("This entry has been registered before."),

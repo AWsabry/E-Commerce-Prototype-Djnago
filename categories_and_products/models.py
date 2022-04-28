@@ -42,6 +42,9 @@ class Product(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     stock = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
     def get_absolute_url(self):
         return reverse("productDetails", args=[self.slug])
     

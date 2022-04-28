@@ -1,44 +1,62 @@
 from django.contrib import admin
-from cart_and_orders.models import Cart, CartItems, Order
+from cart_and_orders.models import Cart, CartItems, Delivery, Order
+from django.conf import settings
 
 from categories_and_products.models import BromoCode
 
-    
-    
+
 class CartItemsAdmin(admin.TabularInline):
     model = CartItems
     raw_id_fields = ['product']
-    
+
 
 class CartAdmin(admin.ModelAdmin):
     list_display = ['user',
-                    'ordered',
                     'total_price',
-                    'delivered',
-                    'coupon',
                     'ordered_date',
-                    'paid'
+                    'Cart_Name',
+                    'PhoneNumber',
 
                     ]
     inlines = [
         CartItemsAdmin,
     ]
+
     
-    
+    def Cart_Name(self, obj):
+        return   str(obj.user.first_name) + " " + str(obj.user.last_name)
+      
+
+    def PhoneNumber(self, obj):
+        return obj.user.PhoneNumber
+
+
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['user',
-                    'ordered',
+                    'totalPrice',
                     'delivered',
-                    'ordered_date'
+                    'paid',
+                    'ordered_date',
+                    'id',
+                    'OrderName',
+                    'PhoneNumber',
 
                     ]
     list_display_links = [
         'user',
     ]
-    list_filter = ['user','ordered',
+    list_filter = ['user',
                    'delivered',
                    'ordered_date',
                    ]
+
+    def OrderName(self, obj):
+        return   str(obj.user.first_name) + " " + str(obj.user.last_name)
+      
+
+    def PhoneNumber(self, obj):
+        return obj.user.PhoneNumber
 
 
 class BromoCodeAdmin(admin.ModelAdmin):
@@ -46,7 +64,15 @@ class BromoCodeAdmin(admin.ModelAdmin):
     list_display = ('code', "percentage", 'created', "active")
 
 
+
+class DeliveryfeesAdmin(admin.ModelAdmin):
+    list_filter = ("city", "delivery_fees",)
+    list_display = ('city', "delivery_fees", 'ordered_date',)
+
+
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Cart,CartAdmin)
-admin.site.register(CartItems)
+admin.site.register(Cart, CartAdmin)
+admin.site.register(Delivery, DeliveryfeesAdmin)
+
+# admin.site.register(CartItems)
 admin.site.register(BromoCode, BromoCodeAdmin)

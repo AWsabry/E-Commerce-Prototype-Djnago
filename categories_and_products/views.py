@@ -120,9 +120,11 @@ def productDetails(request, slug):
         slug=slug, active=True,)
     date = datetime.datetime.now().hour
     cart = Cart.objects.get(user=request.user)
-    order = Order.objects.filter(user=request.user, ordered=False)
+    order = Order.objects.filter(user=request.user,)
 
     cartItem = CartItems.objects.filter(user=request.user).values()
+
+    # orderData = Order.objects.filter(user=request.user).values()
 
     product_data = Product.objects.get(slug=slug)
 
@@ -130,6 +132,10 @@ def productDetails(request, slug):
     for totalPriceCheck in cartItem:
         totalOrderPricelist.append(totalPriceCheck['totalOrderItemPrice'])
     total = sum(totalOrderPricelist)
+
+
+    # place = Order.objects.get(name='kansas')
+
 
     print(total)
     print(totalOrderPricelist)

@@ -1,30 +1,31 @@
+# Importing Django Libraries required
+from django.shortcuts import redirect, render
 from django.http.response import HttpResponse
-from rest_framework.response import Response
-from Register_Login.models import AccessToken, Profile
-from Register_Login.forms import CompleteProfile, LoginForm, RegisterForm
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as user_login
-from rest_framework.views import APIView
-from rest_framework import status
-from Register_Login.serializers import Profileserializers
 from django.template.loader import render_to_string
 from django.utils import timezone
-from Ecommerce_prototype import settings
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
-from django.contrib.auth.models import Group
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
 
+# Importing the utilts file
 from Register_Login.utils import AccessTokenGenerator
+
+# Importing setting from the main project
+from Ecommerce_prototype import settings
+
+
+#Importing Models
+from Register_Login.models import AccessToken, Profile
 from cart_and_orders.models import Cart
-from categories_and_products.models import Product
+
+#Importing Forms
+from Register_Login.forms import LoginForm, RegisterForm
 
 
 # Email Confirm SignUp
@@ -37,13 +38,12 @@ def send_tracking(user):
         return (access_token.token, 0)
     return (False, (last_token.expires - timezone.now()).total_seconds())
 
-
+# Checking the token availablity & creating the cart 
 def token_check(user):
     token, time_tosend = send_tracking(user=user)
     if token:
         Cart.objects.create(
                     user=user,
-                    ordered=False,
                 )
         return (token, time_tosend)
     return (None, time_tosend)
@@ -71,30 +71,32 @@ def send_activate_mail(request, user):
                        'time_tosend': time_tosend}, extra_tags='danger')
 
 
+# This function is to create a new user profile & be saved in the models
 @csrf_exempt
 def Register(request):
+
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         email = form.data.get('email')
-        first_name, last_name = form.data.get(
-            'first_name'), form.data.get('last_name')
+        first_name, last_name,city= form.data.get(
+            'first_name'), form.data.get('last_name'),form.data.get('city')
         password = form.data.get('password1')
+
         user = Profile.objects.create_user(
             email=email,
             first_name=first_name,
             last_name=last_name,
-            password=password,)
-
+            password=password,
+            city = city,
+            )
         send_activate_mail(request, user)
-
         return redirect('email_sent')
-
     else:
         form = RegisterForm()
         return render(request, "Register.html",  {
         })
 
-
+# User Activation to confirm the email he signed up with
 def activate_user(request, token):
     token = AccessToken.objects.filter(token=token).first()
     if token:
@@ -111,35 +113,18 @@ def activate_user(request, token):
 
     return HttpResponse('None found token')
 
-
+# Confirming sending email to user
 def email_sent(request):
     return render(request,"email_sent.html")
 
-def completeProfile(request):
-    form = CompleteProfile(request.POST, request.FILES)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.instance.username = request.user
-            context = {}
-            context['form'] = form
-            form.save()
-            Cart.objects.create(
-                user=request.user,
-                ordered=False,
-            )
-            return redirect('index')
-    return render(request, "completeProfile.html",  {
-        'form': form,
-    })
-
-
+# Logout Page
 def logOut(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return render(request, 'LogOut.html',)
 
-
-def sign(request):
+# Login View
+def signIn(request):
     form = LoginForm(request.POST, request.FILES)
     if request.user.is_authenticated:
         return redirect('index')
@@ -154,17 +139,3 @@ def sign(request):
                 user_login(request, user)
                 return redirect('index')
         return render(request, 'signIn.html', {'form': form})
-
-
-class TestingAPI(APIView):
-
-    def get(self, request):
-        profile = Product.objects.all()
-        serializers = Profileserializers(profile, many=True)
-        return Response(serializers.data)
-
-    def post(self, request):
-        serializers = Profileserializers(data=request.data)
-        if serializers.is_valid():
-            serializers.save()
-        return Response(serializers.data, status=status.HTTP_201_CREATED)
