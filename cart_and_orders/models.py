@@ -43,6 +43,8 @@ class Order(models.Model):
     totalPrice = models.PositiveIntegerField(default=0)
     offerPercentage = models.PositiveIntegerField(default=0)
     deliveryFees = models.PositiveIntegerField(default=0)
+    total_after_offer = models.PositiveIntegerField(default=0)
+
 
 
     # delivery_fees = models.ForeignKey(Delivery, on_delete=models.CASCADE)
@@ -89,8 +91,9 @@ def correct_price(sender, **kwargs):
     price_of_product = Product.objects.get(id=cart_items.product.id)
     cart_items.price = cart_items.quantity * float(price_of_product.price)
     total_cart_items = CartItems.objects.filter(user=cart_items.user)
-    cart = Cart.objects.get(id=cart_items.cart.id)
-    cart.total_price += cart_items.price
-    cart.save()
+
+    # cart = Cart.objects.get(id=cart_items.cart.id)
+    # cart.total_price += cart_items.price
+    # cart.save()
 
 

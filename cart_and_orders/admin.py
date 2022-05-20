@@ -21,6 +21,8 @@ class CartAdmin(admin.ModelAdmin):
     inlines = [
         CartItemsAdmin,
     ]
+    search_fields = ['user']
+
 
     
     def Cart_Name(self, obj):
@@ -50,6 +52,8 @@ class OrderAdmin(admin.ModelAdmin):
                    'delivered',
                    'ordered_date',
                    ]
+    search_fields = ['user']
+
 
     def OrderName(self, obj):
         return   str(obj.user.first_name) + " " + str(obj.user.last_name)
@@ -63,11 +67,14 @@ class BromoCodeAdmin(admin.ModelAdmin):
     list_filter = ("active", "code",)
     list_display = ('code', "percentage", 'created', "active")
 
+    search_fields = ['code']
 
 
 class DeliveryfeesAdmin(admin.ModelAdmin):
     list_filter = ("city", "delivery_fees",)
-    list_display = ('city', "delivery_fees", 'ordered_date',)
+    list_display = ('city', "delivery_fees", 'ordered_date','active')
+    search_fields = ['city']
+
 
 
 admin.site.register(Order, OrderAdmin)

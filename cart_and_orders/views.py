@@ -12,18 +12,15 @@ from categories_and_products.models import BromoCode, Category, Product
 
 def checkout(request):
     discountform = BromoCodeForm(request.POST)
-
     userProfile = Profile.objects.filter(id=request.user.id).first()
     products = Product.objects.filter(active=True,).values()
-    bromocode = BromoCode.objects.filter(active=True,).values()
+    bromocode = BromoCode.objects.filter(active=True)
     categories = Category.objects.filter(active=True)
     userLoggedIN = Profile.objects.filter(id=request.user.id).first()
 
-    cartItem = CartItems.objects.filter(
-        user=request.user, ordered=False).values()
+    cartItem = CartItems.objects.filter(user=request.user, ordered=False).values()
 
-    cartItems = CartItems.objects.filter(
-        user=request.user, ordered=False)
+    cartItems = CartItems.objects.filter(user=request.user, ordered=False)
 
     cart = Cart.objects.filter(user=request.user).values()
 
@@ -31,20 +28,17 @@ def checkout(request):
     for getting_Id in cartItem:
         cartItem_id = getting_Id['id']
 
-    cartItem
-    # print(cartItem)
-
     # Sum of order
     totalOrderPricelist = []
     for totalPriceCheck in cartItem:
         totalOrderPricelist.append(totalPriceCheck['totalOrderItemPrice'])
     total = sum(totalOrderPricelist)
 
-    print(total)
 
-    # getting bromocode name
-    for sytax in bromocode:
-        code = sytax['code']
+
+    # for totalPriceCheck in cartItem:
+    #     totalOrderPricelist.append(totalPriceCheck['totalOrderItemPrice'])
+    # total = sum(totalOrderPricelist)
 
     context = {
         "products": products,
@@ -57,24 +51,22 @@ def checkout(request):
         'userProfile': userProfile,
         'cartItems': cartItems
     }
+    print(total)
     cart = Cart.objects.get(user=request.user)
 
     if request.method == 'POST':
-
-        total = total * sytax['percentage']
-        context['total'] = total
-
-        print(sytax['percentage'])
-
         if discountform.is_valid():
+            # print(float(BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage')))
+
             Order.objects.create(
                 user=request.user,
-                totalPrice=total,
+                totalPrice= total,
                 BromoCode=discountform.cleaned_data['code'],
                 cart=cart,
-            
-
+                offerPercentage = BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage'),
+                # total_after_offer = BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage') * Cart.objects.filter(user=request.user).values('total_price')
             )
+            # print(float(BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage').first())*2)
 
         order = Order.objects.filter(
             user=request.user, delivered=False, paid=False).values()
@@ -92,7 +84,7 @@ def checkout(request):
         Cart.objects.filter(user=request.user).update(total_price=0)
 
 
-        return redirect('/thankyou')
+        # return redirect('/thankyou')
     return render(request, 'checkout.html', context)
 
 

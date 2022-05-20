@@ -156,7 +156,6 @@ def productDetails(request, slug):
             totalOrderItemPrice = product_data.price * \
                 quantityForm.cleaned_data['Quantity']
 
-
             print('Done')
             CartItems.objects.create(
                 user=request.user,
@@ -166,10 +165,17 @@ def productDetails(request, slug):
                 quantity=quantityForm.cleaned_data['Quantity'],
                 totalOrderItemPrice=totalOrderItemPrice
             )
-            
+            print("Total Before added", totalOrderItemPrice)
+
+            cart.total_price += totalOrderItemPrice
+            cart.save()
+
+            print("Cart_Total",cart.total_price)
+
+            print(cart)
 
             return redirect('cart_and_orders:checkout')
-
+        
     return render(request, "productDetails.html", context)
 
 

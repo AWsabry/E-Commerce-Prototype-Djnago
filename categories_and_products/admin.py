@@ -10,6 +10,8 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',), }
     list_filter = ("name", "created", "brand")
     list_display = ('name', "created", "id", 'brand')
+    search_fields = ['name']
+
 
 
 class ProductAdmin(admin.ModelAdmin):
@@ -21,6 +23,8 @@ class ProductAdmin(admin.ModelAdmin):
         'name',
         'category',
     ]
+    search_fields = ['name']
+
 
 class ProductSalesAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',), }
@@ -31,6 +35,8 @@ class ProductSalesAdmin(admin.ModelAdmin):
         'name',
         'category',
     ]
+
+    
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)

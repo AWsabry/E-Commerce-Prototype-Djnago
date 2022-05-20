@@ -5,9 +5,11 @@ from django.contrib import admin
 
 
 class Register(admin.ModelAdmin):
-    # list_filter = ("email","first_name", "last_name", "last_modified")
-    list_display = ("email","first_name", 'last_name','last_modified','is_active'
+    list_filter = ("email","first_name", "last_name", "last_modified")
+    list_display = ("email","first_name", 'last_name','last_modified','PhoneNumber','is_active'
                   )
+    search_fields = ['email']
+
 
 
 
