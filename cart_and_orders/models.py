@@ -41,7 +41,7 @@ class Order(models.Model):
     paid = models.BooleanField(default=False)
     comment = models.TextField(max_length=2000, blank=True, null=True)
     totalPrice = models.PositiveIntegerField(default=0)
-    offerPercentage = models.PositiveIntegerField(default=0)
+    offerPercentage = models.PositiveIntegerField(default=0, null= True, blank=True)
     deliveryFees = models.PositiveIntegerField(default=0)
     total_after_offer = models.PositiveIntegerField(default=0)
 

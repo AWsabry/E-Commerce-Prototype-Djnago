@@ -63,7 +63,7 @@ def checkout(request):
                 totalPrice= total,
                 BromoCode=discountform.cleaned_data['code'],
                 cart=cart,
-                offerPercentage = BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage'),
+                # offerPercentage = BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage'),
                 # total_after_offer = BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage') * Cart.objects.filter(user=request.user).values('total_price')
             )
             # print(float(BromoCode.objects.filter(active=True,code = discountform.cleaned_data['code']).values('percentage').first())*2)
@@ -84,7 +84,7 @@ def checkout(request):
         Cart.objects.filter(user=request.user).update(total_price=0)
 
 
-        # return redirect('/thankyou')
+        return redirect('/thankyou')
     return render(request, 'checkout.html', context)
 
 
